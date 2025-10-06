@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="lb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuelespill 1–20</title>
+<style>
+  /* ————— FONT ————— */
+  @font-face {
+    font-family: 'Schoulschreft';
+    src: url('https://github.com/albrechtclaire1007/schoulschreft/raw/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
+    font-weight: bold;
+  }
+
+  /* ————— COLOURS ————— */
+  :root {
+    --p2-light: #B3D9FF;
+    --p2-dark: #0066CC;
+    --text: #003366;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    font-family: 'Schoulschreft', Arial, sans-serif;
+  }
+
+  .square {
+    width: min(90vmin, 100%);
+    aspect-ratio: 1 / 1;
+    background-color: var(--p2-light);
+    border: 10px solid var(--p2-dark);
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text);
+    font-size: min(45vmin, 30rem);
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    position: relative;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .square:active {
+    transform: scale(0.98);
+    background-color: var(--p2-dark);
+    color: white;
+  }
+
+  .reset {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: white;
+    border: 3px solid var(--p2-dark);
+    color: var(--p2-dark);
+    font-family: 'Schoulschreft', Arial, sans-serif;
+    font-size: 2rem;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    line-height: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .reset:hover {
+    background: var(--p2-dark);
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+  <div class="square" id="square">
+    <div id="number">—</div>
+    <div class="reset" id="reset" title="Nei ufänken">↻</div>
+  </div>
+
+<script>
+  const square = document.getElementById('square');
+  const numberEl = document.getElementById('number');
+  const resetBtn = document.getElementById('reset');
+
+  let numbers = [];
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function refill() {
+    numbers = shuffle([...Array(20)].map((_, i) => i + 1));
+  }
+
+  function nextNumber() {
+    if (numbers.length === 0) refill();
+    const n = numbers.pop();
+    numberEl.textContent = n;
+  }
+
+  function resetAll() {
+    refill();
+    numberEl.textContent = '—';
+  }
+
+  square.addEventListener('click', (e) => {
+    if (e.target === resetBtn) return;
+    nextNumber();
+  });
+
+  resetBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    resetAll();
+  });
+
+  refill();
+</script>
+
+</body>
+</html>
