@@ -1,253 +1,406 @@
 <!DOCTYPE html>
 <html lang="lb">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>P2 – Zuelen & Faarwen</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>P2 – Lauschter-Spiller (Zuelen 1–20)</title>
 <style>
   /* Font */
-  @font-face {
-    font-family: 'Schoulschreft';
-    src: url('https://github.com/albrechtclaire1007/schoulschreft/raw/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
-    font-weight: bold;
-    font-style: normal;
+  @font-face{
+    font-family:'Schoulschreft';
+    src:url('https://github.com/albrechtclaire1007/schoulschreft/raw/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
+    font-weight:bold;
+    font-style:normal;
   }
 
-  /* P2 style */
   :root{
-    --p2-green:#A4D65E;   /* light */
-    --p2-dark:#4E9A06;    /* border */
-    --text:#333;
+    --green:#d5ebd4;
+    --black:#111;
+    --white:#fff;
   }
 
-  /* Remove mobile tap highlight, selections, outlines */
-  *{ -webkit-tap-highlight-color:transparent; user-select:none; outline:none; }
-  html,body{height:100%; margin:0; background:#fff; color:var(--text); font-family:'Schoulschreft', Arial, sans-serif;}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; outline:none;}
+  html,body{height:100%; margin:0; background:var(--white); color:var(--black); font-family:'Schoulschreft', Arial, sans-serif;}
 
   .page{
     min-height:100%;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:5vmin; gap:3vmin;
+    padding:4vmin; gap:3vmin;
   }
 
-  h1{
-    margin:0; text-align:center; color:var(--p2-dark);
-    font-size:clamp(2rem,5vw,4rem);
-  }
+  h1{margin:0; text-align:center; font-size:clamp(1.8rem,5vw,3.6rem); color:var(--black);}
+  .sub{opacity:.7; font-size:clamp(1rem,2.5vw,1.4rem); margin-top:-0.6rem;}
 
-  /* Big square (shared) */
-  .square{
-    width:min(90vmin, 100%);
-    aspect-ratio:1/1;
-    background:#fff;
-    border:12px solid var(--p2-dark);
-    border-radius:40px;
-    display:grid; place-items:center;
-    font-size:min(45vmin,30rem); font-weight:800;
-    cursor:pointer; position:relative;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:transform .15s ease, background-color .25s ease, color .25s ease;
+  .topbar{
+    position:fixed; top:8px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px; align-items:center; justify-content:center;
+    background:var(--white); border:3px solid var(--green); border-radius:18px;
+    padding:.4rem .7rem;
   }
-  .square:active{ transform:scale(.97); background:var(--p2-green); color:#fff; }
-
-  .reset{
-    position:absolute; top:14px; right:18px;
-    width:48px; height:48px; border-radius:50%;
-    background:#fff; border:4px solid var(--p2-dark); color:var(--p2-dark);
-    display:grid; place-items:center; font-size:1.6rem; cursor:pointer;
-    transition:.2s; line-height:1;
-  }
-  .reset:hover{ background:var(--p2-dark); color:#fff; }
-
-  .fade{ animation:fadeIn .35s ease; }
-  @keyframes fadeIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:scale(1)} }
-
-  /* Stage 2 layout */
-  .sentence{
-    display:flex; align-items:center; gap:min(2vmin,16px);
-    font-size:clamp(2rem,4.5vw,3.2rem);
-    flex-wrap:wrap; justify-content:center;
-  }
-  .inlineWrap{
-    display:inline-grid; place-items:center;
-    width:min(28vmin, 240px); aspect-ratio:1/1;
-    border:10px solid var(--p2-dark); border-radius:28px;
-    background:#fff; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.08);
-    font-size:min(18vmin, 10rem);
-    transition:transform .12s ease;
-  }
-  .inlineWrap:active{ transform:scale(.97); }
-
-  /* Colour square starts filled; keep border the same */
-  .colorSquare{
-    background:#fff; /* will be overridden inline */
-  }
-
-  /* Simple helper buttons row (optional) */
-  .controls{ display:flex; gap:12px; }
   .btn{
-    font-family:'Schoulschreft', Arial, sans-serif;
-    font-size:1.2rem; padding:.5rem .9rem; border-radius:14px;
-    border:3px solid var(--p2-dark); background:#fff; color:var(--p2-dark);
-    cursor:pointer; transition:.2s;
+    border:3px solid var(--black); background:var(--white); color:var(--black);
+    padding:.4rem .8rem; border-radius:14px; font-size:1.1rem; cursor:pointer;
   }
-  .btn:hover{ background:var(--p2-dark); color:#fff; }
+  .btn.alt{ border-color:var(--green); background:var(--green); }
+  .btn:active{ transform:scale(.98); }
+
+  .audioBar{
+    display:flex; align-items:center; gap:.6rem;
+    border:3px solid var(--black); border-radius:999px; padding:.3rem .7rem;
+    background:var(--white);
+  }
+  .playBtn{
+    width:44px; height:44px; border-radius:50%;
+    border:3px solid var(--black); background:var(--green); cursor:pointer;
+    display:grid; place-items:center; font-size:1.3rem; line-height:1;
+  }
+
+  /* Layout for tokens */
+  .grid{
+    width:min(1200px, 92vw);
+    display:grid; gap:14px;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    align-items:stretch;
+  }
+
+  /* Number token = white fill, green circle */
+  .numToken{
+    background:var(--white);
+    border:6px solid var(--green);
+    border-radius:999px;
+    display:grid; place-items:center;
+    font-size:clamp(1.6rem,5vw,2.2rem); height:96px;
+    cursor:pointer; transition:transform .1s ease, background .15s ease;
+  }
+  .numToken:active{ transform:scale(.96); background:var(--green); }
+
+  /* Word token = green rounded rectangle */
+  .wordToken{
+    background:var(--green);
+    border:6px solid var(--green);
+    border-radius:22px;
+    display:grid; place-items:center; padding:.6rem .8rem; min-height:76px;
+    font-size:clamp(1.4rem,4.5vw,2rem);
+    cursor:pointer; transition:transform .1s ease, filter .15s ease;
+    text-align:center;
+  }
+  .wordToken:active{ transform:scale(.97); }
+
+  .correct{ box-shadow:0 0 0 6px rgba(0,0,0,.12) inset; animation:blink .35s ease; }
+  @keyframes blink{ 50%{ filter:brightness(1.15);} }
+
+  /* Drag letters (Game C) */
+  .letterArea{
+    display:flex; flex-direction:column; gap:14px; width:min(1100px,92vw);
+    align-items:center;
+  }
+  .slots, .bank{
+    display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
+    padding:14px; border:3px dashed var(--green); border-radius:18px; min-height:72px;
+    background:var(--white);
+  }
+  .letter{
+    background:var(--green); color:var(--black); border:3px solid var(--green);
+    border-radius:15px; padding:.45rem .7rem; font-size:clamp(1.4rem,4.5vw,2rem);
+    cursor:grab; touch-action:none;
+  }
+  .slot{
+    width:2.2em; height:2.2em; border:3px solid var(--green); border-radius:12px;
+    display:grid; place-items:center; font-size:clamp(1.4rem,4.5vw,2rem);
+    background:var(--white);
+  }
+
+  .hidden{ display:none !important; }
 </style>
 </head>
 <body>
 
-  <!-- STAGE 1 -->
-  <section id="stage1" class="page" aria-live="polite">
-    <h1>Klick a so d’Zuel</h1>
-    <div class="square" id="bigSquare">
-      <div id="bigNum">—</div>
-      <div class="reset" id="bigReset" title="Nei ufänken">↻</div>
-    </div>
-    <!-- (Optional) leave controls hidden; kept minimal -->
-  </section>
+<div class="topbar">
+  <button class="btn" id="prev">←</button>
+  <span id="stageName">Game A</span>
+  <button class="btn" id="next">→</button>
+</div>
 
-  <!-- STAGE 2 -->
-  <section id="stage2" class="page" style="display:none" aria-live="polite">
-    <h1>Lies de Saz.</h1>
-    <div class="sentence">
-      <span>D’</span>
+<!-- Game A -->
+<section class="page" id="gameA">
+  <h1>Lauschter a klick op déi richteg Zuel.</h1>
+  <div class="sub">Klick op déi héier Zuel (1–20)</div>
 
-      <!-- number square (tap to change 1–20) -->
-      <div id="numSq" class="inlineWrap" title="Klick fir eng Zuel ze wiesselen">
-        <span id="numSqVal">1</span>
-      </div>
+  <div class="audioBar">
+    <button class="playBtn" id="playA" title="Nees ofspillen">▶</button>
+    <span id="promptA"> </span>
+  </div>
 
-      <span>ass</span>
+  <div class="grid" id="gridA"></div>
+</section>
 
-      <!-- colour square (tap to change colour set) -->
-      <div id="colSq" class="inlineWrap colorSquare" title="Klick fir d’Faarf ze wiesselen"></div>
+<!-- Game B -->
+<section class="page hidden" id="gameB">
+  <h1>Lauschter a klick op dat richtegt Wuert.</h1>
+  <div class="sub">Klick op d’geschriwwent Wuert (1–20)</div>
 
-      <span>.</span>
-    </div>
+  <div class="audioBar">
+    <button class="playBtn" id="playB" title="Nees ofspillen">▶</button>
+    <span id="promptB"> </span>
+  </div>
 
-    <div class="controls">
-      <button id="backTo1" class="btn" title="Zréck op d’Zuelen">↩︎ Zréck</button>
-      <button id="reshuffleBoth" class="btn" title="Refillen">↻ Nei mëschen</button>
-    </div>
-  </section>
+  <div class="grid" id="gridB"></div>
+</section>
+
+<!-- Game C -->
+<section class="page hidden" id="gameC">
+  <h1>Lauschter a schreif d'Wuert mat de Buschtawen.</h1>
+  <div class="sub">Zéng bis zwanzeg: zitt d’Buschtawen an déi richteg Reiefolleg</div>
+
+  <div class="audioBar">
+    <button class="playBtn" id="playC" title="Nees ofspillen">▶</button>
+    <span id="promptC"> </span>
+  </div>
+
+  <div class="letterArea">
+    <div class="slots" id="slots"></div>
+    <div class="bank" id="bank"></div>
+  </div>
+</section>
+
+<audio id="speaker" preload="auto"></audio>
 
 <script>
-/* ---------- helpers ---------- */
-function shuffle(arr){
-  for(let i=arr.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [arr[i],arr[j]] = [arr[j],arr[i]];
+/* ---------- Data ---------- */
+const AUDIO_BASE = "https://github.com/albrechtclaire1007/zuelen1-20kub/raw/refs/heads/main/"; 
+// explicit for ones you listed; rest follow same pattern
+const audioUrl = n => `${AUDIO_BASE}${n}.mp3`;
+
+const WORDS = {
+  1:"eent", 2:"zwee", 3:"dräi", 4:"véier", 5:"fënnef",
+  6:"sechs", 7:"siwen", 8:"aacht", 9:"néng", 10:"zéng",
+  11:"eelef", 12:"zwielef", 13:"dräizéng", 14:"véierzéng", 15:"fofzéng",
+  16:"siechzéng", 17:"siwwenzéng", 18:"uechtzéng", 19:"nonzéng", 20:"zwanzeg"
+};
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ---------- Navigation ---------- */
+const pages = ["gameA","gameB","gameC"];
+let pageIdx = 0;
+const speaker = document.getElementById('speaker');
+
+function showPage(i){
+  pageIdx = (i+pages.length)%pages.length;
+  pages.forEach((id,idx)=>document.getElementById(id).classList.toggle('hidden', idx!==pageIdx));
+  document.getElementById('stageName').textContent = ["Game A","Game B","Game C"][pageIdx];
+}
+document.getElementById('prev').onclick = ()=> showPage(pageIdx-1);
+document.getElementById('next').onclick = ()=> showPage(pageIdx+1);
+
+/* ---------- Autoplay helper with graceful fallback ---------- */
+async function playSound(src){
+  try{
+    if(speaker.src !== src) speaker.src = src;
+    await speaker.play();
+  }catch(e){
+    // Some browsers block autoplay; do nothing. Users can hit ▶.
   }
-  return arr;
 }
 
-/* ---------- Stage 1: 1–20 big square ---------- */
-const stage1 = document.getElementById('stage1');
-const stage2 = document.getElementById('stage2');
+/* ============================================================
+   Game A — Listen & click the correct NUMBER (1–20)
+   ============================================================ */
+const gridA = document.getElementById('gridA');
+const promptA = document.getElementById('promptA');
+const playA = document.getElementById('playA');
 
-const bigSquare = document.getElementById('bigSquare');
-const bigNum    = document.getElementById('bigNum');
-const bigReset  = document.getElementById('bigReset');
+let bagA = shuffle([...Array(20)].map((_,i)=>i+1));
+let targetA = null;
 
-let bag1 = [];
+function layoutNumbers(){
+  gridA.innerHTML = "";
+  const nums = shuffle([...Array(20)].map((_,i)=>i+1));
+  nums.forEach(n=>{
+    const b = document.createElement('button');
+    b.className = 'numToken';
+    b.textContent = n;
+    b.onclick = ()=> checkA(n, b);
+    gridA.appendChild(b);
+  });
+}
 
-function refillBag1(){ bag1 = shuffle([...Array(20)].map((_,i)=>i+1)); }
+function nextA(){
+  if(bagA.length===0) bagA = shuffle([...Array(20)].map((_,i)=>i+1));
+  targetA = bagA.pop();
+  promptA.textContent = `Zuel?`;
+  playSound(audioUrl(targetA));
+}
 
-function nextBig(){
-  if(bag1.length===0){ // finished 1–20 -> switch to stage 2
-    switchToStage2();
-    return;
+function checkA(n, el){
+  if(n===targetA){
+    el.classList.add('correct');
+    setTimeout(()=>{ el.classList.remove('correct'); nextA(); }, 300);
+  } else {
+    el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180});
   }
-  const n = bag1.pop();
-  bigNum.textContent = n;
-  bigNum.classList.remove('fade'); void bigNum.offsetWidth; bigNum.classList.add('fade');
+}
+playA.onclick = ()=> playSound(audioUrl(targetA));
+
+/* ============================================================
+   Game B — Listen & click the correct WORD (1–20)
+   ============================================================ */
+const gridB = document.getElementById('gridB');
+const promptB = document.getElementById('promptB');
+const playB = document.getElementById('playB');
+
+let bagB = shuffle([...Array(20)].map((_,i)=>i+1));
+let targetB = null;
+
+function layoutWords(){
+  gridB.innerHTML = "";
+  const nums = shuffle([...Array(20)].map((_,i)=>i+1));
+  nums.forEach(n=>{
+    const w = WORDS[n];
+    const b = document.createElement('button');
+    b.className = 'wordToken';
+    b.textContent = w;
+    b.onclick = ()=> checkB(n, b);
+    gridB.appendChild(b);
+  });
 }
 
-function resetStage1(){
-  refillBag1();
-  bigNum.textContent = '—';
+function nextB(){
+  if(bagB.length===0) bagB = shuffle([...Array(20)].map((_,i)=>i+1));
+  targetB = bagB.pop();
+  promptB.textContent = `Wuert?`;
+  playSound(audioUrl(targetB));
 }
 
-bigSquare.addEventListener('click', (e)=>{
-  if(e.target===bigReset) return;
-  nextBig();
-});
-bigReset.addEventListener('click', (e)=>{ e.stopPropagation(); resetStage1(); });
-
-/* ---------- Stage 2: sentence with number + colour ---------- */
-const numSq     = document.getElementById('numSq');
-const numSqVal  = document.getElementById('numSqVal');
-const colSq     = document.getElementById('colSq');
-
-const backTo1   = document.getElementById('backTo1');
-const reshuffleBoth = document.getElementById('reshuffleBoth');
-
-let bag2 = [];        // numbers for stage 2
-let colourBag = [];   // colours bag
-
-// Colours (from your sheet): name + hex
-const COLOURS = [
-  {name:'wäiss',      hex:'#FFFFFF', text:'#333333', border:true},
-  {name:'schwaarz',   hex:'#1F1F1F', text:'#FFFFFF'},
-  {name:'rout',       hex:'#E53935', text:'#FFFFFF'},
-  {name:'brong',      hex:'#8D6E63', text:'#FFFFFF'},
-  {name:'orange',     hex:'#FB8C00', text:'#FFFFFF'},
-  {name:'giel',       hex:'#FFD54F', text:'#333333'},
-  {name:'gréng',      hex:'#66BB6A', text:'#FFFFFF'},
-  {name:'donkelgréng',hex:'#1B5E20', text:'#FFFFFF'},
-  {name:'hellblo',    hex:'#29B6F6', text:'#FFFFFF'},
-  {name:'donkelblo',  hex:'#1E3A8A', text:'#FFFFFF'},
-  {name:'rosa',       hex:'#F50078', text:'#FFFFFF'},
-  {name:'mof',        hex:'#8E5AA6', text:'#FFFFFF'},
-  {name:'hellgro',    hex:'#BDBDBD', text:'#333333'},
-  {name:'donkelgro',  hex:'#2F3B3B', text:'#FFFFFF'}
-];
-
-function refillBag2(){ bag2 = shuffle([...Array(20)].map((_,i)=>i+1)); }
-function refillColour(){ colourBag = shuffle([...COLOURS]); }
-
-function nextNumSq(){
-  if(bag2.length===0) refillBag2();
-  const n = bag2.pop();
-  numSqVal.textContent = n;
-  numSqVal.classList.remove('fade'); void numSqVal.offsetWidth; numSqVal.classList.add('fade');
+function checkB(n, el){
+  if(n===targetB){
+    el.classList.add('correct');
+    setTimeout(()=>{ el.classList.remove('correct'); nextB(); }, 300);
+  } else {
+    el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180});
+  }
 }
-function nextColour(){
-  if(colourBag.length===0) refillColour();
-  const c = colourBag.pop();
-  colSq.style.background = c.hex;
-  colSq.style.color = c.text;
-  // keep P2 dark border for consistency
-  colSq.classList.remove('fade'); void colSq.offsetWidth; colSq.classList.add('fade');
+playB.onclick = ()=> playSound(audioUrl(targetB));
+
+/* ============================================================
+   Game C — Listen & SPELL (10–20), drag letters to slots
+   ============================================================ */
+const playC = document.getElementById('playC');
+const promptC = document.getElementById('promptC');
+const slots = document.getElementById('slots');
+const bank = document.getElementById('bank');
+
+let bagC = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
+let targetC = null;
+
+function lettersOf(word){
+  // Keep spaces/apos out; allow accents (as actual letters)
+  return Array.from(word.replace(/\s+/g,''));
 }
 
-numSq.addEventListener('click', nextNumSq);
-colSq.addEventListener('click', nextColour);
+function buildRoundC(){
+  slots.innerHTML = ""; bank.innerHTML = "";
+  if(bagC.length===0) bagC = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
+  targetC = bagC.pop();
+  const word = WORDS[targetC];
+  promptC.textContent = `Schreif: ${word}`;
+  playSound(audioUrl(targetC));
 
-backTo1.addEventListener('click', ()=>{
-  // Return to stage 1 fresh
-  stage2.style.display='none';
-  stage1.style.display='flex';
-  resetStage1();
-});
-reshuffleBoth.addEventListener('click', ()=>{
-  refillBag2(); refillColour(); nextNumSq(); nextColour();
-});
+  // Slots
+  const letters = lettersOf(word);
+  letters.forEach(()=> {
+    const s = document.createElement('div');
+    s.className = 'slot';
+    s.dataset.accepts = '1';
+    slots.appendChild(s);
+  });
 
-/* ---------- view switching ---------- */
-function switchToStage2(){
-  stage1.style.display='none';
-  stage2.style.display='flex';
-  // initialize stage 2 content
-  if(bag2.length===0) refillBag2();
-  if(colourBag.length===0) refillColour();
-  nextNumSq();
-  nextColour();
+  // Bank letters (shuffled)
+  shuffle([...letters]).forEach(ch=>{
+    const el = document.createElement('div');
+    el.className = 'letter';
+    el.textContent = ch;
+    el.draggable = true;
+    bank.appendChild(el);
+  });
+
+  enableDragDrop();
 }
 
-/* ---------- init ---------- */
-refillBag1();
+function enableDragDrop(){
+  // drag start
+  bank.querySelectorAll('.letter').forEach(el=>{
+    el.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/plain', el.textContent);
+      e.dataTransfer.setDragImage(el, 12, 12);
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
+  });
+
+  // allow dropping into either bank or slots
+  [bank, slots].forEach(area=>{
+    area.addEventListener('dragover', e=>{ e.preventDefault(); });
+    area.addEventListener('drop', e=>{
+      e.preventDefault();
+      const dragging = document.querySelector('.dragging');
+      if(!dragging) return;
+
+      if(area===slots){
+        // put into first empty slot
+        const empty = [...slots.children].find(s=>!s.textContent);
+        if(empty){ empty.textContent = dragging.textContent; dragging.remove(); checkSpelling(); }
+      } else {
+        // drop back to bank
+        bank.appendChild(dragging);
+      }
+    });
+  });
+
+  // Touch fallback (simple tap-to-move)
+  bank.querySelectorAll('.letter').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const empty = [...slots.children].find(s=>!s.textContent);
+      if(empty){ empty.textContent = el.textContent; el.remove(); checkSpelling(); }
+    });
+  });
+  slots.querySelectorAll('.slot').forEach(s=>{
+    s.addEventListener('click', ()=>{
+      if(s.textContent){
+        const back = document.createElement('div');
+        back.className='letter'; back.textContent=s.textContent; back.draggable=true;
+        bank.appendChild(back); s.textContent='';
+        enableDragDrop();
+      }
+    });
+  });
+}
+
+function checkSpelling(){
+  const attempt = [...slots.children].map(s=>s.textContent||'').join('');
+  const target = WORDS[targetC].replace(/\s+/g,'');
+  if(attempt.length === target.length){
+    if(attempt === target){
+      slots.classList.add('correct');
+      setTimeout(()=>{ slots.classList.remove('correct'); buildRoundC(); }, 350);
+    } else {
+      // little shake
+      slots.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:220});
+    }
+  }
+}
+playC.onclick = ()=> playSound(audioUrl(targetC));
+
+/* ---------- Init all pages ---------- */
+function init(){
+  // A
+  layoutNumbers(); nextA();
+  // B
+  layoutWords(); nextB();
+  // C
+  buildRoundC();
+}
+init();
 </script>
 </body>
 </html>
-
