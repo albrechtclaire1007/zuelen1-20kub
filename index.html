@@ -3,158 +3,171 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>P2 – Lauschter-Spiller (Zuelen 1–20)</title>
+<title>P2 – Zuelen & Faarwen: Komplett Flow</title>
 <style>
-  /* Font */
+  /* —— Font —— */
   @font-face{
     font-family:'Schoulschreft';
     src:url('https://github.com/albrechtclaire1007/schoulschreft/raw/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
-    font-weight:bold;
-    font-style:normal;
+    font-weight:bold; font-style:normal;
   }
 
   :root{
-    --green:#d5ebd4;
+    --green:#d5ebd4;  /* brand P2 green */
     --black:#111;
     --white:#fff;
+    --border: 3px;
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; outline:none;}
   html,body{height:100%; margin:0; background:var(--white); color:var(--black); font-family:'Schoulschreft', Arial, sans-serif;}
 
-  .page{
-    min-height:100%;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding:4vmin; gap:3vmin;
-  }
+  .wrap{min-height:100%; display:flex; flex-direction:column; align-items:center; gap:3vmin; padding:5vmin 4vmin 7vmin;}
 
-  h1{margin:0; text-align:center; font-size:clamp(1.8rem,5vw,3.6rem); color:var(--black);}
-  .sub{opacity:.7; font-size:clamp(1rem,2.5vw,1.4rem); margin-top:-0.6rem;}
+  h1{margin:0; text-align:center; font-size:clamp(1.9rem,5vw,3.6rem);}
+  .sub{opacity:.7; margin-top:-.5rem; font-size:clamp(1rem,2.5vw,1.3rem);}
 
-  .topbar{
-    position:fixed; top:8px; left:50%; transform:translateX(-50%);
-    display:flex; gap:8px; align-items:center; justify-content:center;
-    background:var(--white); border:3px solid var(--green); border-radius:18px;
-    padding:.4rem .7rem;
+  /* —— Top nav —— */
+  .top{
+    position:sticky; top:8px; z-index:10; display:flex; gap:10px; align-items:center;
+    background:var(--white); border:var(--border) solid var(--green); border-radius:18px;
+    padding:.35rem .6rem;
   }
   .btn{
-    border:3px solid var(--black); background:var(--white); color:var(--black);
-    padding:.4rem .8rem; border-radius:14px; font-size:1.1rem; cursor:pointer;
+    border:var(--border) solid var(--black); background:var(--white); color:var(--black);
+    padding:.45rem .85rem; border-radius:14px; cursor:pointer; font-size:1.05rem;
   }
-  .btn.alt{ border-color:var(--green); background:var(--green); }
   .btn:active{ transform:scale(.98); }
+  .flow{opacity:.75; font-size:.95rem; padding:0 .3rem;}
 
+  .hidden{display:none !important;}
+
+  /* —— Audio bar —— */
   .audioBar{
     display:flex; align-items:center; gap:.6rem;
-    border:3px solid var(--black); border-radius:999px; padding:.3rem .7rem;
+    border:var(--border) solid var(--black); border-radius:999px; padding:.35rem .7rem;
     background:var(--white);
   }
   .playBtn{
     width:44px; height:44px; border-radius:50%;
-    border:3px solid var(--black); background:var(--green); cursor:pointer;
-    display:grid; place-items:center; font-size:1.3rem; line-height:1;
+    border:var(--border) solid var(--black); background:var(--green);
+    display:grid; place-items:center; font-size:1.2rem; cursor:pointer;
   }
 
-  /* Layout for tokens */
+  /* —— Grids —— */
   .grid{
     width:min(1200px, 92vw);
     display:grid; gap:14px;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
     align-items:stretch;
   }
 
-  /* Number token = white fill, green circle */
+  /* —— Tokens —— */
   .numToken{
-    background:var(--white);
-    border:6px solid var(--green);
-    border-radius:999px;
-    display:grid; place-items:center;
-    font-size:clamp(1.6rem,5vw,2.2rem); height:96px;
-    cursor:pointer; transition:transform .1s ease, background .15s ease;
+    background:var(--white); border:6px solid var(--green); border-radius:999px;
+    display:grid; place-items:center; height:100px;
+    font-size:clamp(1.6rem,5vw,2.2rem); cursor:pointer;
+    transition:transform .1s ease, background .15s ease;
   }
   .numToken:active{ transform:scale(.96); background:var(--green); }
 
-  /* Word token = green rounded rectangle */
   .wordToken{
-    background:var(--green);
-    border:6px solid var(--green);
-    border-radius:22px;
-    display:grid; place-items:center; padding:.6rem .8rem; min-height:76px;
-    font-size:clamp(1.4rem,4.5vw,2rem);
-    cursor:pointer; transition:transform .1s ease, filter .15s ease;
-    text-align:center;
+    background:var(--green); border:6px solid var(--green); border-radius:22px;
+    display:grid; place-items:center; padding:.6rem .9rem; min-height:78px;
+    font-size:clamp(1.45rem,4.6vw,2rem); text-align:center; cursor:pointer;
+    transition:transform .1s ease;
   }
   .wordToken:active{ transform:scale(.97); }
 
   .correct{ box-shadow:0 0 0 6px rgba(0,0,0,.12) inset; animation:blink .35s ease; }
   @keyframes blink{ 50%{ filter:brightness(1.15);} }
 
-  /* Drag letters (Game C) */
-  .letterArea{
-    display:flex; flex-direction:column; gap:14px; width:min(1100px,92vw);
-    align-items:center;
-  }
-  .slots, .bank{
+  /* —— Game C (letters) —— */
+  .letterArea{ width:min(1100px,92vw); display:flex; flex-direction:column; gap:14px; align-items:center; }
+  .slots,.bank{
     display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
-    padding:14px; border:3px dashed var(--green); border-radius:18px; min-height:72px;
-    background:var(--white);
+    padding:14px; border:var(--border) dashed var(--green); border-radius:18px; min-height:72px; background:var(--white);
   }
   .letter{
-    background:var(--green); color:var(--black); border:3px solid var(--green);
+    background:var(--green); color:var(--black); border:var(--border) solid var(--green);
     border-radius:15px; padding:.45rem .7rem; font-size:clamp(1.4rem,4.5vw,2rem);
     cursor:grab; touch-action:none;
   }
   .slot{
-    width:2.2em; height:2.2em; border:3px solid var(--green); border-radius:12px;
-    display:grid; place-items:center; font-size:clamp(1.4rem,4.5vw,2rem);
-    background:var(--white);
+    width:2.2em; height:2.2em; border:var(--border) solid var(--green); border-radius:12px;
+    display:grid; place-items:center; font-size:clamp(1.4rem,4.5vw,2rem); background:var(--white);
   }
 
-  .hidden{ display:none !important; }
+  /* —— Big number square (Game D) —— */
+  .bigSquare{
+    width:min(90vmin,100%); aspect-ratio:1/1; background:#fff;
+    border:12px solid var(--green); border-radius:40px; display:grid; place-items:center;
+    font-size:min(45vmin,30rem); font-weight:800; position:relative; cursor:pointer;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:transform .15s ease, background-color .2s ease, color .2s ease;
+  }
+  .bigSquare:active{ transform:scale(.97); background:var(--green); color:#000; }
+  .reset{
+    position:absolute; top:14px; right:18px; width:48px; height:48px; border-radius:50%;
+    background:#fff; border:4px solid var(--green); display:grid; place-items:center;
+    font-size:1.6rem; line-height:1; cursor:pointer;
+  }
+
+  .fade{ animation:fadeIn .35s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:scale(1)} }
+
+  /* —— Sentence (Game E) —— */
+  .sentence{ display:flex; align-items:center; gap:min(2vmin,16px); flex-wrap:wrap; justify-content:center; font-size:clamp(2rem,4.5vw,3.2rem); }
+  .inlineSq{
+    display:inline-grid; place-items:center; width:min(28vmin,240px); aspect-ratio:1/1;
+    border:10px solid var(--green); border-radius:28px; background:#fff; cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,.08); font-size:min(18vmin,10rem); transition:transform .12s ease;
+  }
+  .inlineSq:active{ transform:scale(.97); }
 </style>
 </head>
 <body>
 
-<div class="topbar">
+<div class="top">
   <button class="btn" id="prev">←</button>
-  <span id="stageName">Game A</span>
+  <span class="flow" id="flowLabel">1 / 5</span>
   <button class="btn" id="next">→</button>
 </div>
 
-<!-- Game A -->
-<section class="page" id="gameA">
+<!-- GAME 1: Listen & click the correct number -->
+<section class="wrap" id="g1">
   <h1>Lauschter a klick op déi richteg Zuel.</h1>
   <div class="sub">Klick op déi héier Zuel (1–20)</div>
 
   <div class="audioBar">
-    <button class="playBtn" id="playA" title="Nees ofspillen">▶</button>
-    <span id="promptA"> </span>
+    <button class="playBtn" id="play1" title="Nees ofspillen">▶</button>
+    <span id="prompt1"></span>
   </div>
 
-  <div class="grid" id="gridA"></div>
+  <div class="grid" id="grid1"></div>
 </section>
 
-<!-- Game B -->
-<section class="page hidden" id="gameB">
+<!-- GAME 2: Listen & click the correct word -->
+<section class="wrap hidden" id="g2">
   <h1>Lauschter a klick op dat richtegt Wuert.</h1>
   <div class="sub">Klick op d’geschriwwent Wuert (1–20)</div>
 
   <div class="audioBar">
-    <button class="playBtn" id="playB" title="Nees ofspillen">▶</button>
-    <span id="promptB"> </span>
+    <button class="playBtn" id="play2" title="Nees ofspillen">▶</button>
+    <span id="prompt2"></span>
   </div>
 
-  <div class="grid" id="gridB"></div>
+  <div class="grid" id="grid2"></div>
 </section>
 
-<!-- Game C -->
-<section class="page hidden" id="gameC">
+<!-- GAME 3: Listen & spell (10–20) -->
+<section class="wrap hidden" id="g3">
   <h1>Lauschter a schreif d'Wuert mat de Buschtawen.</h1>
   <div class="sub">Zéng bis zwanzeg: zitt d’Buschtawen an déi richteg Reiefolleg</div>
 
   <div class="audioBar">
-    <button class="playBtn" id="playC" title="Nees ofspillen">▶</button>
-    <span id="promptC"> </span>
+    <button class="playBtn" id="play3" title="Nees ofspillen">▶</button>
+    <span id="prompt3"></span>
   </div>
 
   <div class="letterArea">
@@ -163,244 +176,251 @@
   </div>
 </section>
 
+<!-- GAME 4: Tap 1–20 without repeats -->
+<section class="wrap hidden" id="g4">
+  <h1>Klick a so d’Zuel</h1>
+  <div class="bigSquare" id="bigSquare">
+    <div id="bigNum">—</div>
+    <button class="reset" id="bigReset" title="Nei ufänken">↻</button>
+  </div>
+</section>
+
+<!-- GAME 5: Sentence with number + colour -->
+<section class="wrap hidden" id="g5">
+  <h1>Lies de Saz.</h1>
+  <div class="sentence">
+    <span>D’</span>
+    <div class="inlineSq" id="numSq"><span id="numSqVal">1</span></div>
+    <span>ass</span>
+    <div class="inlineSq" id="colSq"></div>
+    <span>.</span>
+  </div>
+  <div>
+    <button class="btn" id="reshuffleBoth">↻ Nei mëschen</button>
+  </div>
+</section>
+
 <audio id="speaker" preload="auto"></audio>
 
 <script>
-/* ---------- Data ---------- */
-const AUDIO_BASE = "https://github.com/albrechtclaire1007/zuelen1-20kub/raw/refs/heads/main/"; 
-// explicit for ones you listed; rest follow same pattern
+/* ================= Shared Data ================= */
+const AUDIO_BASE = "https://github.com/albrechtclaire1007/zuelen1-20kub/raw/refs/heads/main/";
 const audioUrl = n => `${AUDIO_BASE}${n}.mp3`;
-
 const WORDS = {
   1:"eent", 2:"zwee", 3:"dräi", 4:"véier", 5:"fënnef",
   6:"sechs", 7:"siwen", 8:"aacht", 9:"néng", 10:"zéng",
   11:"eelef", 12:"zwielef", 13:"dräizéng", 14:"véierzéng", 15:"fofzéng",
   16:"siechzéng", 17:"siwwenzéng", 18:"uechtzéng", 19:"nonzéng", 20:"zwanzeg"
 };
+const COLOURS = [
+  {name:'wäiss',      hex:'#FFFFFF', text:'#111'},
+  {name:'schwaarz',   hex:'#1F1F1F', text:'#FFFFFF'},
+  {name:'rout',       hex:'#E53935', text:'#FFFFFF'},
+  {name:'brong',      hex:'#8D6E63', text:'#FFFFFF'},
+  {name:'orange',     hex:'#FB8C00', text:'#FFFFFF'},
+  {name:'giel',       hex:'#FFD54F', text:'#111'},
+  {name:'gréng',      hex:'#66BB6A', text:'#FFFFFF'},
+  {name:'donkelgréng',hex:'#1B5E20', text:'#FFFFFF'},
+  {name:'hellblo',    hex:'#29B6F6', text:'#FFFFFF'},
+  {name:'donkelblo',  hex:'#1E3A8A', text:'#FFFFFF'},
+  {name:'rosa',       hex:'#F50078', text:'#FFFFFF'},
+  {name:'mof',        hex:'#8E5AA6', text:'#FFFFFF'},
+  {name:'hellgro',    hex:'#BDBDBD', text:'#111'},
+  {name:'donkelgro',  hex:'#2F3B3B', text:'#FFFFFF'}
+];
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 
-/* ---------- Navigation ---------- */
-const pages = ["gameA","gameB","gameC"];
+const pages = ["g1","g2","g3","g4","g5"];
 let pageIdx = 0;
-const speaker = document.getElementById('speaker');
 
+const flowLabel = document.getElementById('flowLabel');
 function showPage(i){
-  pageIdx = (i+pages.length)%pages.length;
+  pageIdx = Math.max(0, Math.min(pages.length-1, i));
   pages.forEach((id,idx)=>document.getElementById(id).classList.toggle('hidden', idx!==pageIdx));
-  document.getElementById('stageName').textContent = ["Game A","Game B","Game C"][pageIdx];
+  flowLabel.textContent = `${pageIdx+1} / ${pages.length}`;
 }
 document.getElementById('prev').onclick = ()=> showPage(pageIdx-1);
 document.getElementById('next').onclick = ()=> showPage(pageIdx+1);
 
-/* ---------- Autoplay helper with graceful fallback ---------- */
+const speaker = document.getElementById('speaker');
 async function playSound(src){
-  try{
-    if(speaker.src !== src) speaker.src = src;
-    await speaker.play();
-  }catch(e){
-    // Some browsers block autoplay; do nothing. Users can hit ▶.
-  }
+  try{ if(speaker.src!==src) speaker.src = src; await speaker.play(); }catch(e){}
 }
 
-/* ============================================================
-   Game A — Listen & click the correct NUMBER (1–20)
-   ============================================================ */
-const gridA = document.getElementById('gridA');
-const promptA = document.getElementById('promptA');
-const playA = document.getElementById('playA');
+/* ================= GAME 1 ================= */
+const grid1 = document.getElementById('grid1');
+const prompt1 = document.getElementById('prompt1');
+document.getElementById('play1').onclick = ()=> playSound(audioUrl(target1));
 
-let bagA = shuffle([...Array(20)].map((_,i)=>i+1));
-let targetA = null;
+let bag1 = shuffle([...Array(20)].map((_,i)=>i+1));
+let target1 = null;
 
-function layoutNumbers(){
-  gridA.innerHTML = "";
-  const nums = shuffle([...Array(20)].map((_,i)=>i+1));
-  nums.forEach(n=>{
+function layoutG1(){
+  grid1.innerHTML = "";
+  shuffle([...Array(20)].map((_,i)=>i+1)).forEach(n=>{
     const b = document.createElement('button');
     b.className = 'numToken';
     b.textContent = n;
-    b.onclick = ()=> checkA(n, b);
-    gridA.appendChild(b);
+    b.onclick = ()=> checkG1(n, b);
+    grid1.appendChild(b);
   });
 }
-
-function nextA(){
-  if(bagA.length===0) bagA = shuffle([...Array(20)].map((_,i)=>i+1));
-  targetA = bagA.pop();
-  promptA.textContent = `Zuel?`;
-  playSound(audioUrl(targetA));
+function nextG1(){
+  if(bag1.length===0) bag1 = shuffle([...Array(20)].map((_,i)=>i+1));
+  target1 = bag1.pop();
+  prompt1.textContent = "Zuel?";
+  playSound(audioUrl(target1));
+}
+function checkG1(n, el){
+  if(n===target1){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG1();},300);}
+  else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
 }
 
-function checkA(n, el){
-  if(n===targetA){
-    el.classList.add('correct');
-    setTimeout(()=>{ el.classList.remove('correct'); nextA(); }, 300);
-  } else {
-    el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180});
-  }
-}
-playA.onclick = ()=> playSound(audioUrl(targetA));
+/* ================= GAME 2 ================= */
+const grid2 = document.getElementById('grid2');
+const prompt2 = document.getElementById('prompt2');
+document.getElementById('play2').onclick = ()=> playSound(audioUrl(target2));
 
-/* ============================================================
-   Game B — Listen & click the correct WORD (1–20)
-   ============================================================ */
-const gridB = document.getElementById('gridB');
-const promptB = document.getElementById('promptB');
-const playB = document.getElementById('playB');
+let bag2 = shuffle([...Array(20)].map((_,i)=>i+1));
+let target2 = null;
 
-let bagB = shuffle([...Array(20)].map((_,i)=>i+1));
-let targetB = null;
-
-function layoutWords(){
-  gridB.innerHTML = "";
-  const nums = shuffle([...Array(20)].map((_,i)=>i+1));
-  nums.forEach(n=>{
+function layoutG2(){
+  grid2.innerHTML = "";
+  shuffle([...Array(20)].map((_,i)=>i+1)).forEach(n=>{
     const w = WORDS[n];
     const b = document.createElement('button');
     b.className = 'wordToken';
     b.textContent = w;
-    b.onclick = ()=> checkB(n, b);
-    gridB.appendChild(b);
+    b.onclick = ()=> checkG2(n, b);
+    grid2.appendChild(b);
   });
 }
-
-function nextB(){
-  if(bagB.length===0) bagB = shuffle([...Array(20)].map((_,i)=>i+1));
-  targetB = bagB.pop();
-  promptB.textContent = `Wuert?`;
-  playSound(audioUrl(targetB));
+function nextG2(){
+  if(bag2.length===0) bag2 = shuffle([...Array(20)].map((_,i)=>i+1));
+  target2 = bag2.pop();
+  prompt2.textContent = "Wuert?";
+  playSound(audioUrl(target2));
+}
+function checkG2(n, el){
+  if(n===target2){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG2();},300);}
+  else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
 }
 
-function checkB(n, el){
-  if(n===targetB){
-    el.classList.add('correct');
-    setTimeout(()=>{ el.classList.remove('correct'); nextB(); }, 300);
-  } else {
-    el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180});
-  }
-}
-playB.onclick = ()=> playSound(audioUrl(targetB));
-
-/* ============================================================
-   Game C — Listen & SPELL (10–20), drag letters to slots
-   ============================================================ */
-const playC = document.getElementById('playC');
-const promptC = document.getElementById('promptC');
+/* ================= GAME 3 ================= */
+const play3 = document.getElementById('play3');
+const prompt3 = document.getElementById('prompt3');
 const slots = document.getElementById('slots');
 const bank = document.getElementById('bank');
+play3.onclick = ()=> playSound(audioUrl(target3));
 
-let bagC = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
-let targetC = null;
+let bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
+let target3 = null;
+function lettersOf(word){ return Array.from(word.replace(/\s+/g,'')); }
 
-function lettersOf(word){
-  // Keep spaces/apos out; allow accents (as actual letters)
-  return Array.from(word.replace(/\s+/g,''));
-}
-
-function buildRoundC(){
+function buildG3(){
   slots.innerHTML = ""; bank.innerHTML = "";
-  if(bagC.length===0) bagC = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
-  targetC = bagC.pop();
-  const word = WORDS[targetC];
-  promptC.textContent = `Schreif: ${word}`;
-  playSound(audioUrl(targetC));
+  if(bag3.length===0) bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
+  target3 = bag3.pop();
+  const word = WORDS[target3];
+  prompt3.textContent = `Schreif: ${word}`;
+  playSound(audioUrl(target3));
 
-  // Slots
   const letters = lettersOf(word);
-  letters.forEach(()=> {
-    const s = document.createElement('div');
-    s.className = 'slot';
-    s.dataset.accepts = '1';
-    slots.appendChild(s);
-  });
-
-  // Bank letters (shuffled)
+  letters.forEach(()=> slots.appendChild(Object.assign(document.createElement('div'),{className:'slot'})));
   shuffle([...letters]).forEach(ch=>{
-    const el = document.createElement('div');
-    el.className = 'letter';
-    el.textContent = ch;
+    const el = Object.assign(document.createElement('div'),{className:'letter',textContent:ch});
     el.draggable = true;
     bank.appendChild(el);
   });
-
-  enableDragDrop();
+  enableDnd();
 }
-
-function enableDragDrop(){
-  // drag start
+function enableDnd(){
   bank.querySelectorAll('.letter').forEach(el=>{
-    el.addEventListener('dragstart', e=>{
-      e.dataTransfer.setData('text/plain', el.textContent);
-      e.dataTransfer.setDragImage(el, 12, 12);
-      el.classList.add('dragging');
-    });
+    el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', el.textContent); el.classList.add('dragging'); });
     el.addEventListener('dragend', ()=> el.classList.remove('dragging'));
-  });
-
-  // allow dropping into either bank or slots
-  [bank, slots].forEach(area=>{
-    area.addEventListener('dragover', e=>{ e.preventDefault(); });
-    area.addEventListener('drop', e=>{
-      e.preventDefault();
-      const dragging = document.querySelector('.dragging');
-      if(!dragging) return;
-
-      if(area===slots){
-        // put into first empty slot
-        const empty = [...slots.children].find(s=>!s.textContent);
-        if(empty){ empty.textContent = dragging.textContent; dragging.remove(); checkSpelling(); }
-      } else {
-        // drop back to bank
-        bank.appendChild(dragging);
-      }
-    });
-  });
-
-  // Touch fallback (simple tap-to-move)
-  bank.querySelectorAll('.letter').forEach(el=>{
     el.addEventListener('click', ()=>{
       const empty = [...slots.children].find(s=>!s.textContent);
-      if(empty){ empty.textContent = el.textContent; el.remove(); checkSpelling(); }
+      if(empty){ empty.textContent = el.textContent; el.remove(); checkG3(); }
+    });
+  });
+  [bank, slots].forEach(area=>{
+    area.addEventListener('dragover', e=> e.preventDefault());
+    area.addEventListener('drop', e=>{
+      e.preventDefault();
+      const drag = document.querySelector('.dragging'); if(!drag) return;
+      if(area===slots){
+        const empty = [...slots.children].find(s=>!s.textContent);
+        if(empty){ empty.textContent = drag.textContent; drag.remove(); checkG3(); }
+      } else { bank.appendChild(drag); }
     });
   });
   slots.querySelectorAll('.slot').forEach(s=>{
     s.addEventListener('click', ()=>{
       if(s.textContent){
-        const back = document.createElement('div');
-        back.className='letter'; back.textContent=s.textContent; back.draggable=true;
-        bank.appendChild(back); s.textContent='';
-        enableDragDrop();
+        const back = Object.assign(document.createElement('div'),{className:'letter',textContent:s.textContent});
+        back.draggable = true; bank.appendChild(back); s.textContent=''; enableDnd();
       }
     });
   });
 }
-
-function checkSpelling(){
+function checkG3(){
   const attempt = [...slots.children].map(s=>s.textContent||'').join('');
-  const target = WORDS[targetC].replace(/\s+/g,'');
-  if(attempt.length === target.length){
-    if(attempt === target){
-      slots.classList.add('correct');
-      setTimeout(()=>{ slots.classList.remove('correct'); buildRoundC(); }, 350);
-    } else {
-      // little shake
-      slots.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:220});
-    }
+  const target = WORDS[target3].replace(/\s+/g,'');
+  if(attempt.length===target.length){
+    if(attempt===target){ slots.classList.add('correct'); setTimeout(()=>{slots.classList.remove('correct'); buildG3();},350); }
+    else { slots.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:220}); }
   }
 }
-playC.onclick = ()=> playSound(audioUrl(targetC));
 
-/* ---------- Init all pages ---------- */
+/* ================= GAME 4 ================= */
+const bigSquare = document.getElementById('bigSquare');
+const bigNum = document.getElementById('bigNum');
+const bigReset = document.getElementById('bigReset');
+let bag4 = [];
+function refill4(){ bag4 = shuffle([...Array(20)].map((_,i)=>i+1)); }
+function next4(){
+  if(bag4.length===0){ showPage(4); initG5(); return; }
+  const n = bag4.pop();
+  bigNum.textContent = n;
+  bigNum.classList.remove('fade'); void bigNum.offsetWidth; bigNum.classList.add('fade');
+}
+function reset4(){ refill4(); bigNum.textContent='—'; }
+bigSquare.addEventListener('click', (e)=>{ if(e.target===bigReset) return; next4(); });
+bigReset.addEventListener('click', (e)=>{ e.stopPropagation(); reset4(); });
+
+/* ================= GAME 5 ================= */
+const numSq = document.getElementById('numSq');
+const numSqVal = document.getElementById('numSqVal');
+const colSq = document.getElementById('colSq');
+const reshuffleBoth = document.getElementById('reshuffleBoth');
+
+let bag5 = []; let colourBag = [];
+function refill5(){ bag5 = shuffle([...Array(20)].map((_,i)=>i+1)); }
+function refillColours(){ colourBag = shuffle([...COLOURS]); }
+function nextNum5(){ if(bag5.length===0) refill5(); const n=bag5.pop(); numSqVal.textContent=n; numSqVal.classList.remove('fade'); void numSqVal.offsetWidth; numSqVal.classList.add('fade'); }
+function nextColour5(){ if(colourBag.length===0) refillColours(); const c=colourBag.pop(); colSq.style.background=c.hex; colSq.style.color=c.text; colSq.classList.remove('fade'); void colSq.offsetWidth; colSq.classList.add('fade'); }
+numSq.addEventListener('click', nextNum5);
+colSq.addEventListener('click', nextColour5);
+reshuffleBoth.addEventListener('click', ()=>{ refill5(); refillColours(); nextNum5(); nextColour5(); });
+
+function initG5(){ if(!bag5.length) refill5(); if(!colourBag.length) refillColours(); nextNum5(); nextColour5(); }
+
+/* ================= Init all ================= */
 function init(){
-  // A
-  layoutNumbers(); nextA();
-  // B
-  layoutWords(); nextB();
-  // C
-  buildRoundC();
+  // G1
+  layoutG1(); nextG1();
+  // G2
+  layoutG2(); nextG2();
+  // G3
+  buildG3();
+  // G4
+  reset4();
+  // Start at page 1
+  showPage(0);
 }
 init();
 </script>
 </body>
 </html>
+
