@@ -23,8 +23,12 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; outline:none;}
   html,body{height:100%; margin:0; background:var(--white); color:var(--black); font-family:'Schoulschreft', Arial, sans-serif;}
 
-  .wrap{min-height:100%; display:flex; flex-direction:column; align-items:center; gap:3vmin; padding:5vmin 4vmin 7vmin;}
-  h1{margin:0; text-align:center; font-size:clamp(1.9rem,5vw,3.6rem);}
+  .wrap{
+    min-height:100%;
+    display:flex; flex-direction:column; align-items:center;
+    gap:3vmin; padding:3vmin 3vmin 4vmin;
+  }
+  h1{margin:0; text-align:center; font-size:clamp(2.2rem, 6vmin, 5rem);}
 
   /* Top navigation */
   .top{
@@ -35,6 +39,7 @@
   .btn{
     border:var(--border) solid var(--black); background:var(--white); color:var(--black);
     padding:.45rem .85rem; border-radius:14px; cursor:pointer; font-size:1.05rem;
+    font-family:'Schoulschreft', Arial, sans-serif;
   }
   .btn:active{ transform:scale(.98); }
   .flow{opacity:.85; font-size:1rem; padding:0 .2rem; min-width:7ch; text-align:center;}
@@ -44,47 +49,49 @@
   /* Audio button */
   .audioBar{ display:flex; align-items:center; gap:.6rem; }
   .playBtn{
-    width:44px; height:44px; border-radius:50%;
+    width:56px; height:56px; border-radius:50%;
     border:var(--border) solid var(--black); background:var(--green);
-    display:grid; place-items:center; font-size:1.2rem; cursor:pointer;
+    display:grid; place-items:center; font-size:1.3rem; cursor:pointer;
   }
 
   /* Grids */
   .grid{
-    width:min(1200px, 92vw);
-    display:grid; gap:14px;
-    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    width:95vw; max-width:2000px;
+    display:grid; gap:2vmin;
+    grid-template-columns: repeat(auto-fill, minmax(12vmin, 1fr));
     align-items:stretch;
   }
 
   /* Tokens */
   .numToken{
     background:var(--white); border:6px solid var(--green); border-radius:999px;
-    display:grid; place-items:center; height:100px;
+    display:grid; place-items:center;
+    height:clamp(110px, 14vmin, 340px);
     font-family:'Schoulschreft', Arial, sans-serif;
-    font-size:clamp(1.6rem,5vw,2.2rem); cursor:pointer;
-    transition:transform .1s ease, background .15s ease;
+    font-size:clamp(2rem, 9vmin, 7rem);
+    cursor:pointer;
+    transition:transform .1s ease, background .15s ease, border-color .15s ease;
   }
-  .numToken:active{ transform:scale(.96); background:var(--green); }
+  .numToken:active{ transform:scale(.96); }
 
   .wordToken{
     background:var(--green); border:6px solid var(--green); border-radius:22px;
     display:flex; align-items:center; justify-content:center;
-    padding:.6rem .9rem; min-height:78px; text-align:center; cursor:pointer;
-    transition:transform .1s ease;
-    /* base size; JS will shrink per word if needed */
-    font-size:2rem;
+    padding:1.2vmin 1.6vmin;
+    min-height:clamp(90px, 12vmin, 280px);
+    text-align:center; cursor:pointer;
+    transition:transform .1s ease, background .15s ease, border-color .15s ease, filter .15s ease;
+    font-size:clamp(2.2rem, 5.5vmin, 4rem);
+    font-family:'Schoulschreft', Arial, sans-serif;
   }
-.wordToken:active{ transform:scale(.97); }
-.btn, .wordToken, #reshuffleBoth {
-  font-family: 'Schoulschreft', Arial, sans-serif !important;
-}
+  .wordToken:active{ transform:scale(.97); }
 
-  .correct{ box-shadow:0 0 0 6px rgba(0,0,0,.12) inset; animation:blink .35s ease; }
-  @keyframes blink{ 50%{ filter:brightness(1.15);} }
+  /* Feedback flashes for games 1 & 2 */
+  .flash-good{ background:var(--green) !important; filter:brightness(1.04); }
+  .flash-bad{ background:var(--red) !important; border-color:var(--red) !important; }
 
   /* Game 3 letters */
-  .letterArea{ width:min(1100px,92vw); display:flex; flex-direction:column; gap:14px; align-items:center; }
+  .letterArea{ width:95vw; max-width:2000px; display:flex; flex-direction:column; gap:2vmin; align-items:center; }
   .slots,.bank{
     display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
     padding:14px; border:var(--border) dashed var(--green); border-radius:18px; min-height:72px; background:var(--white);
@@ -103,7 +110,7 @@
 
   /* Big number square */
   .bigSquare{
-    width:min(90vmin,100%); aspect-ratio:1/1; background:#fff;
+    width:min(95vmin,100%); aspect-ratio:1/1; background:#fff;
     border:12px solid var(--green); border-radius:40px; display:grid; place-items:center;
     font-size:min(45vmin,30rem); font-weight:800; position:relative; cursor:pointer;
     box-shadow:0 10px 30px rgba(0,0,0,.08);
@@ -122,9 +129,9 @@
   /* Sentence squares */
   .sentence{ display:flex; align-items:center; gap:min(2vmin,16px); flex-wrap:wrap; justify-content:center; font-size:clamp(2rem,4.5vw,3.2rem); }
   .inlineSq{
-    display:inline-grid; place-items:center; width:min(28vmin,240px); aspect-ratio:1/1;
+    display:inline-grid; place-items:center; width:min(36vmin,420px); aspect-ratio:1/1;
     border:10px solid var(--green); border-radius:28px; background:#fff; cursor:pointer;
-    box-shadow:0 8px 24px rgba(0,0,0,.08); font-size:min(18vmin,10rem); transition:transform .12s ease;
+    box-shadow:0 8px 24px rgba(0,0,0,.08); font-size:min(22vmin,12rem); transition:transform .12s ease;
   }
   .inlineSq:active{ transform:scale(.97); }
 </style>
@@ -154,7 +161,10 @@
 <!-- Spill 3 -->
 <section class="wrap hidden" id="g3">
   <h1>Lauschter a schreif d'Wuert mat de Buschtawen</h1>
-  <div class="audioBar"><button class="playBtn" id="play3" title="Ofspillen">▶</button></div>
+  <div class="audioBar">
+    <button class="playBtn" id="play3" title="Ofspillen">▶</button>
+    <button class="btn" id="reset3">Zerécksetzen</button>
+  </div>
   <div class="letterArea">
     <div class="slots" id="slots"></div>
     <div class="bank" id="bank"></div>
@@ -250,9 +260,15 @@ function nextG1(){
   target1 = bag1.pop();
   playSound(audioUrl(target1)); // autoplay
 }
+function flash(el, ok){
+  el.classList.remove('flash-good','flash-bad');
+  void el.offsetWidth;
+  el.classList.add(ok ? 'flash-good' : 'flash-bad');
+  setTimeout(()=> el.classList.remove('flash-good','flash-bad'), 260);
+}
 function checkG1(n, el){
-  if(n===target1){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG1();},300);}
-  else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
+  if(n===target1){ flash(el,true); setTimeout(nextG1, 280); }
+  else { flash(el,false); }
 }
 
 /* Spill 2 */
@@ -262,11 +278,8 @@ let bag2 = shuffle([...Array(20)].map((_,i)=>i+1));
 let target2 = null;
 
 function fitWord(el){
-  // shrink font-size until it fits, down to 1.2rem
-  let size = 32; // px
-  el.style.fontSize = size+'px';
-  const maxW = el.clientWidth - 16;
-  const maxH = el.clientHeight - 12;
+  let size = parseFloat(getComputedStyle(el).fontSize); // starting from CSS clamp
+  const maxW = el.clientWidth - 18, maxH = el.clientHeight - 14;
   const fits = ()=> el.scrollWidth<=maxW && el.scrollHeight<=maxH;
   while(size>19 && !fits()){ size -= 1; el.style.fontSize = size+'px'; }
 }
@@ -278,7 +291,6 @@ function layoutG2(){
     b.textContent = WORDS[n];
     b.onclick = ()=> checkG2(n, b);
     grid2.appendChild(b);
-    // ensure size fit after mount
     requestAnimationFrame(()=>fitWord(b));
   });
 }
@@ -288,27 +300,34 @@ function nextG2(){
   playSound(audioUrl(target2)); // autoplay
 }
 function checkG2(n, el){
-  if(n===target2){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG2();},300);}
-  else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
+  if(n===target2){ flash(el,true); setTimeout(nextG2, 280); }
+  else { flash(el,false); }
 }
 
 /* Spill 3 */
 const play3 = document.getElementById('play3');
+const reset3 = document.getElementById('reset3');
 const slots = document.getElementById('slots');
 const bank = document.getElementById('bank');
 play3.onclick = ()=> playSound(audioUrl(target3));
+reset3.onclick = ()=> rebuildG3(true); // restart same word
 
 let bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
 let target3 = null;
+
 function lettersOf(word){ return Array.from(word.replace(/\s+/g,'')); }
 
-function buildG3(){
+function rebuildG3(keepTarget=false){
   slots.innerHTML = ""; bank.innerHTML = "";
-  if(bag3.length===0) bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
-  target3 = bag3.pop();
-  playSound(audioUrl(target3)); // autoplay
+  if(!keepTarget){
+    if(bag3.length===0) bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
+    target3 = bag3.pop();
+  }
+  playSound(audioUrl(target3)); // autoplay each round or after reset
 
-  const letters = lettersOf(WORDS[target3]);
+  const word = WORDS[target3];
+  const letters = lettersOf(word);
+
   letters.forEach(()=> slots.appendChild(Object.assign(document.createElement('div'),{className:'slot'})));
   shuffle([...letters]).forEach(ch=>{
     const el = Object.assign(document.createElement('div'),{className:'letter',textContent:ch});
@@ -316,6 +335,7 @@ function buildG3(){
   });
   enableDnd();
 }
+
 function enableDnd(){
   bank.querySelectorAll('.letter').forEach(el=>{
     el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', el.textContent); el.classList.add('dragging'); });
@@ -345,16 +365,18 @@ function enableDnd(){
     });
   });
 }
+
 function checkG3(){
   const attempt = [...slots.children].map(s=>s.textContent||'').join('');
   const target = WORDS[target3].replace(/\s+/g,'');
   if(attempt.length===target.length){
     if(attempt===target){
       slots.classList.add('goodFlash');
-      setTimeout(()=>{ slots.classList.remove('goodFlash'); buildG3(); }, 800);
+      setTimeout(()=>{ slots.classList.remove('goodFlash'); rebuildG3(false); }, 800);
     } else {
       slots.classList.add('badFlash');
-      setTimeout(()=> slots.classList.remove('badFlash'), 500);
+      setTimeout(()=> slots.classList.remove('badFlash'), 600);
+      // user can correct or hit Zerécksetzen
     }
   }
 }
@@ -397,7 +419,7 @@ function init(){
   // g2
   layoutG2(); nextG2();
   // g3
-  buildG3();
+  rebuildG3(false);
   // g4
   reset4();
   // start
@@ -407,4 +429,3 @@ init();
 </script>
 </body>
 </html>
-
