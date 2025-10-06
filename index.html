@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>P2 – Zuelen & Faarwen: Komplett Flow</title>
+<title>P2 – Zuelen a Faarwen – Spiller</title>
 <style>
-  /* —— Font —— */
+  /* Font */
   @font-face{
     font-family:'Schoulschreft';
     src:url('https://github.com/albrechtclaire1007/schoulschreft/raw/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
@@ -13,21 +13,20 @@
   }
 
   :root{
-    --green:#d5ebd4;  /* brand P2 green */
+    --green:#d5ebd4;
     --black:#111;
     --white:#fff;
-    --border: 3px;
+    --red:#ffcccc;
+    --border:3px;
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; outline:none;}
   html,body{height:100%; margin:0; background:var(--white); color:var(--black); font-family:'Schoulschreft', Arial, sans-serif;}
 
   .wrap{min-height:100%; display:flex; flex-direction:column; align-items:center; gap:3vmin; padding:5vmin 4vmin 7vmin;}
-
   h1{margin:0; text-align:center; font-size:clamp(1.9rem,5vw,3.6rem);}
-  .sub{opacity:.7; margin-top:-.5rem; font-size:clamp(1rem,2.5vw,1.3rem);}
 
-  /* —— Top nav —— */
+  /* Top navigation */
   .top{
     position:sticky; top:8px; z-index:10; display:flex; gap:10px; align-items:center;
     background:var(--white); border:var(--border) solid var(--green); border-radius:18px;
@@ -38,23 +37,19 @@
     padding:.45rem .85rem; border-radius:14px; cursor:pointer; font-size:1.05rem;
   }
   .btn:active{ transform:scale(.98); }
-  .flow{opacity:.75; font-size:.95rem; padding:0 .3rem;}
+  .flow{opacity:.85; font-size:1rem; padding:0 .2rem; min-width:7ch; text-align:center;}
 
   .hidden{display:none !important;}
 
-  /* —— Audio bar —— */
-  .audioBar{
-    display:flex; align-items:center; gap:.6rem;
-    border:var(--border) solid var(--black); border-radius:999px; padding:.35rem .7rem;
-    background:var(--white);
-  }
+  /* Audio button */
+  .audioBar{ display:flex; align-items:center; gap:.6rem; }
   .playBtn{
     width:44px; height:44px; border-radius:50%;
     border:var(--border) solid var(--black); background:var(--green);
     display:grid; place-items:center; font-size:1.2rem; cursor:pointer;
   }
 
-  /* —— Grids —— */
+  /* Grids */
   .grid{
     width:min(1200px, 92vw);
     display:grid; gap:14px;
@@ -62,10 +57,11 @@
     align-items:stretch;
   }
 
-  /* —— Tokens —— */
+  /* Tokens */
   .numToken{
     background:var(--white); border:6px solid var(--green); border-radius:999px;
     display:grid; place-items:center; height:100px;
+    font-family:'Schoulschreft', Arial, sans-serif;
     font-size:clamp(1.6rem,5vw,2.2rem); cursor:pointer;
     transition:transform .1s ease, background .15s ease;
   }
@@ -73,16 +69,18 @@
 
   .wordToken{
     background:var(--green); border:6px solid var(--green); border-radius:22px;
-    display:grid; place-items:center; padding:.6rem .9rem; min-height:78px;
-    font-size:clamp(1.45rem,4.6vw,2rem); text-align:center; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    padding:.6rem .9rem; min-height:78px; text-align:center; cursor:pointer;
     transition:transform .1s ease;
+    /* base size; JS will shrink per word if needed */
+    font-size:2rem;
   }
   .wordToken:active{ transform:scale(.97); }
 
   .correct{ box-shadow:0 0 0 6px rgba(0,0,0,.12) inset; animation:blink .35s ease; }
   @keyframes blink{ 50%{ filter:brightness(1.15);} }
 
-  /* —— Game C (letters) —— */
+  /* Game 3 letters */
   .letterArea{ width:min(1100px,92vw); display:flex; flex-direction:column; gap:14px; align-items:center; }
   .slots,.bank{
     display:flex; flex-wrap:wrap; gap:10px; justify-content:center;
@@ -97,8 +95,10 @@
     width:2.2em; height:2.2em; border:var(--border) solid var(--green); border-radius:12px;
     display:grid; place-items:center; font-size:clamp(1.4rem,4.5vw,2rem); background:var(--white);
   }
+  .goodFlash{ background:var(--green) !important; transition:background .18s ease; }
+  .badFlash{ background:var(--red) !important; transition:background .18s ease; }
 
-  /* —— Big number square (Game D) —— */
+  /* Big number square */
   .bigSquare{
     width:min(90vmin,100%); aspect-ratio:1/1; background:#fff;
     border:12px solid var(--green); border-radius:40px; display:grid; place-items:center;
@@ -110,13 +110,13 @@
   .reset{
     position:absolute; top:14px; right:18px; width:48px; height:48px; border-radius:50%;
     background:#fff; border:4px solid var(--green); display:grid; place-items:center;
-    font-size:1.6rem; line-height:1; cursor:pointer;
+    font-size:1.4rem; line-height:1; cursor:pointer;
   }
 
   .fade{ animation:fadeIn .35s ease; }
   @keyframes fadeIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:scale(1)} }
 
-  /* —— Sentence (Game E) —— */
+  /* Sentence squares */
   .sentence{ display:flex; align-items:center; gap:min(2vmin,16px); flex-wrap:wrap; justify-content:center; font-size:clamp(2rem,4.5vw,3.2rem); }
   .inlineSq{
     display:inline-grid; place-items:center; width:min(28vmin,240px); aspect-ratio:1/1;
@@ -129,54 +129,36 @@
 <body>
 
 <div class="top">
-  <button class="btn" id="prev">←</button>
-  <span class="flow" id="flowLabel">1 / 5</span>
-  <button class="btn" id="next">→</button>
+  <button class="btn" id="prev">Zréck</button>
+  <span class="flow" id="flowLabel">1. Spill</span>
+  <button class="btn" id="next">Weider</button>
 </div>
 
-<!-- GAME 1: Listen & click the correct number -->
+<!-- Spill 1 -->
 <section class="wrap" id="g1">
-  <h1>Lauschter a klick op déi richteg Zuel.</h1>
-  <div class="sub">Klick op déi héier Zuel (1–20)</div>
-
-  <div class="audioBar">
-    <button class="playBtn" id="play1" title="Nees ofspillen">▶</button>
-    <span id="prompt1"></span>
-  </div>
-
+  <h1>Lauschter a klick op déi richteg Zuel</h1>
+  <div class="audioBar"><button class="playBtn" id="play1" title="Ofspillen">▶</button></div>
   <div class="grid" id="grid1"></div>
 </section>
 
-<!-- GAME 2: Listen & click the correct word -->
+<!-- Spill 2 -->
 <section class="wrap hidden" id="g2">
-  <h1>Lauschter a klick op dat richtegt Wuert.</h1>
-  <div class="sub">Klick op d’geschriwwent Wuert (1–20)</div>
-
-  <div class="audioBar">
-    <button class="playBtn" id="play2" title="Nees ofspillen">▶</button>
-    <span id="prompt2"></span>
-  </div>
-
+  <h1>Lauschter a klick op dat richtegt Wuert</h1>
+  <div class="audioBar"><button class="playBtn" id="play2" title="Ofspillen">▶</button></div>
   <div class="grid" id="grid2"></div>
 </section>
 
-<!-- GAME 3: Listen & spell (10–20) -->
+<!-- Spill 3 -->
 <section class="wrap hidden" id="g3">
-  <h1>Lauschter a schreif d'Wuert mat de Buschtawen.</h1>
-  <div class="sub">Zéng bis zwanzeg: zitt d’Buschtawen an déi richteg Reiefolleg</div>
-
-  <div class="audioBar">
-    <button class="playBtn" id="play3" title="Nees ofspillen">▶</button>
-    <span id="prompt3"></span>
-  </div>
-
+  <h1>Lauschter a schreif d'Wuert mat de Buschtawen</h1>
+  <div class="audioBar"><button class="playBtn" id="play3" title="Ofspillen">▶</button></div>
   <div class="letterArea">
     <div class="slots" id="slots"></div>
     <div class="bank" id="bank"></div>
   </div>
 </section>
 
-<!-- GAME 4: Tap 1–20 without repeats -->
+<!-- Spill 4 -->
 <section class="wrap hidden" id="g4">
   <h1>Klick a so d’Zuel</h1>
   <div class="bigSquare" id="bigSquare">
@@ -185,9 +167,9 @@
   </div>
 </section>
 
-<!-- GAME 5: Sentence with number + colour -->
+<!-- Spill 5 -->
 <section class="wrap hidden" id="g5">
-  <h1>Lies de Saz.</h1>
+  <h1>Lies de Saz</h1>
   <div class="sentence">
     <span>D’</span>
     <div class="inlineSq" id="numSq"><span id="numSqVal">1</span></div>
@@ -195,15 +177,13 @@
     <div class="inlineSq" id="colSq"></div>
     <span>.</span>
   </div>
-  <div>
-    <button class="btn" id="reshuffleBoth">↻ Nei mëschen</button>
-  </div>
+  <div><button class="btn" id="reshuffleBoth">Nei mëschen</button></div>
 </section>
 
 <audio id="speaker" preload="auto"></audio>
 
 <script>
-/* ================= Shared Data ================= */
+/* Shared */
 const AUDIO_BASE = "https://github.com/albrechtclaire1007/zuelen1-20kub/raw/refs/heads/main/";
 const audioUrl = n => `${AUDIO_BASE}${n}.mp3`;
 const WORDS = {
@@ -213,46 +193,42 @@ const WORDS = {
   16:"siechzéng", 17:"siwwenzéng", 18:"uechtzéng", 19:"nonzéng", 20:"zwanzeg"
 };
 const COLOURS = [
-  {name:'wäiss',      hex:'#FFFFFF', text:'#111'},
-  {name:'schwaarz',   hex:'#1F1F1F', text:'#FFFFFF'},
-  {name:'rout',       hex:'#E53935', text:'#FFFFFF'},
-  {name:'brong',      hex:'#8D6E63', text:'#FFFFFF'},
-  {name:'orange',     hex:'#FB8C00', text:'#FFFFFF'},
-  {name:'giel',       hex:'#FFD54F', text:'#111'},
-  {name:'gréng',      hex:'#66BB6A', text:'#FFFFFF'},
-  {name:'donkelgréng',hex:'#1B5E20', text:'#FFFFFF'},
-  {name:'hellblo',    hex:'#29B6F6', text:'#FFFFFF'},
-  {name:'donkelblo',  hex:'#1E3A8A', text:'#FFFFFF'},
-  {name:'rosa',       hex:'#F50078', text:'#FFFFFF'},
-  {name:'mof',        hex:'#8E5AA6', text:'#FFFFFF'},
-  {name:'hellgro',    hex:'#BDBDBD', text:'#111'},
-  {name:'donkelgro',  hex:'#2F3B3B', text:'#FFFFFF'}
+  {name:'wäiss', hex:'#FFFFFF', text:'#111'},
+  {name:'schwaarz', hex:'#1F1F1F', text:'#FFFFFF'},
+  {name:'rout', hex:'#E53935', text:'#FFFFFF'},
+  {name:'brong', hex:'#8D6E63', text:'#FFFFFF'},
+  {name:'orange', hex:'#FB8C00', text:'#FFFFFF'},
+  {name:'giel', hex:'#FFD54F', text:'#111'},
+  {name:'gréng', hex:'#66BB6A', text:'#FFFFFF'},
+  {name:'donkelgréng', hex:'#1B5E20', text:'#FFFFFF'},
+  {name:'hellblo', hex:'#29B6F6', text:'#FFFFFF'},
+  {name:'donkelblo', hex:'#1E3A8A', text:'#FFFFFF'},
+  {name:'rosa', hex:'#F50078', text:'#FFFFFF'},
+  {name:'mof', hex:'#8E5AA6', text:'#FFFFFF'},
+  {name:'hellgro', hex:'#BDBDBD', text:'#111'},
+  {name:'donkelgro', hex:'#2F3B3B', text:'#FFFFFF'}
 ];
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
 
 const pages = ["g1","g2","g3","g4","g5"];
 let pageIdx = 0;
-
 const flowLabel = document.getElementById('flowLabel');
+function labelFor(i){ return `${i+1}. Spill`; }
 function showPage(i){
   pageIdx = Math.max(0, Math.min(pages.length-1, i));
   pages.forEach((id,idx)=>document.getElementById(id).classList.toggle('hidden', idx!==pageIdx));
-  flowLabel.textContent = `${pageIdx+1} / ${pages.length}`;
+  flowLabel.textContent = labelFor(pageIdx);
 }
 document.getElementById('prev').onclick = ()=> showPage(pageIdx-1);
 document.getElementById('next').onclick = ()=> showPage(pageIdx+1);
 
 const speaker = document.getElementById('speaker');
-async function playSound(src){
-  try{ if(speaker.src!==src) speaker.src = src; await speaker.play(); }catch(e){}
-}
+async function playSound(src){ try{ if(speaker.src!==src) speaker.src=src; await speaker.play(); }catch(e){} }
 
-/* ================= GAME 1 ================= */
+/* Spill 1 */
 const grid1 = document.getElementById('grid1');
-const prompt1 = document.getElementById('prompt1');
 document.getElementById('play1').onclick = ()=> playSound(audioUrl(target1));
-
 let bag1 = shuffle([...Array(20)].map((_,i)=>i+1));
 let target1 = null;
 
@@ -269,47 +245,52 @@ function layoutG1(){
 function nextG1(){
   if(bag1.length===0) bag1 = shuffle([...Array(20)].map((_,i)=>i+1));
   target1 = bag1.pop();
-  prompt1.textContent = "Zuel?";
-  playSound(audioUrl(target1));
+  playSound(audioUrl(target1)); // autoplay
 }
 function checkG1(n, el){
   if(n===target1){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG1();},300);}
   else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
 }
 
-/* ================= GAME 2 ================= */
+/* Spill 2 */
 const grid2 = document.getElementById('grid2');
-const prompt2 = document.getElementById('prompt2');
 document.getElementById('play2').onclick = ()=> playSound(audioUrl(target2));
-
 let bag2 = shuffle([...Array(20)].map((_,i)=>i+1));
 let target2 = null;
 
+function fitWord(el){
+  // shrink font-size until it fits, down to 1.2rem
+  let size = 32; // px
+  el.style.fontSize = size+'px';
+  const maxW = el.clientWidth - 16;
+  const maxH = el.clientHeight - 12;
+  const fits = ()=> el.scrollWidth<=maxW && el.scrollHeight<=maxH;
+  while(size>19 && !fits()){ size -= 1; el.style.fontSize = size+'px'; }
+}
 function layoutG2(){
   grid2.innerHTML = "";
   shuffle([...Array(20)].map((_,i)=>i+1)).forEach(n=>{
-    const w = WORDS[n];
     const b = document.createElement('button');
     b.className = 'wordToken';
-    b.textContent = w;
+    b.textContent = WORDS[n];
     b.onclick = ()=> checkG2(n, b);
     grid2.appendChild(b);
+    // ensure size fit after mount
+    requestAnimationFrame(()=>fitWord(b));
   });
 }
 function nextG2(){
   if(bag2.length===0) bag2 = shuffle([...Array(20)].map((_,i)=>i+1));
   target2 = bag2.pop();
-  prompt2.textContent = "Wuert?";
-  playSound(audioUrl(target2));
+  playSound(audioUrl(target2)); // autoplay
 }
 function checkG2(n, el){
   if(n===target2){ el.classList.add('correct'); setTimeout(()=>{el.classList.remove('correct'); nextG2();},300);}
   else { el.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:180}); }
 }
 
-/* ================= GAME 3 ================= */
+/* Spill 3 */
 const play3 = document.getElementById('play3');
-const prompt3 = document.getElementById('prompt3');
 const slots = document.getElementById('slots');
 const bank = document.getElementById('bank');
 play3.onclick = ()=> playSound(audioUrl(target3));
@@ -322,16 +303,13 @@ function buildG3(){
   slots.innerHTML = ""; bank.innerHTML = "";
   if(bag3.length===0) bag3 = shuffle([10,11,12,13,14,15,16,17,18,19,20]);
   target3 = bag3.pop();
-  const word = WORDS[target3];
-  prompt3.textContent = `Schreif: ${word}`;
-  playSound(audioUrl(target3));
+  playSound(audioUrl(target3)); // autoplay
 
-  const letters = lettersOf(word);
+  const letters = lettersOf(WORDS[target3]);
   letters.forEach(()=> slots.appendChild(Object.assign(document.createElement('div'),{className:'slot'})));
   shuffle([...letters]).forEach(ch=>{
     const el = Object.assign(document.createElement('div'),{className:'letter',textContent:ch});
-    el.draggable = true;
-    bank.appendChild(el);
+    el.draggable = true; bank.appendChild(el);
   });
   enableDnd();
 }
@@ -368,12 +346,17 @@ function checkG3(){
   const attempt = [...slots.children].map(s=>s.textContent||'').join('');
   const target = WORDS[target3].replace(/\s+/g,'');
   if(attempt.length===target.length){
-    if(attempt===target){ slots.classList.add('correct'); setTimeout(()=>{slots.classList.remove('correct'); buildG3();},350); }
-    else { slots.animate([{transform:'translateX(0)'},{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:220}); }
+    if(attempt===target){
+      slots.classList.add('goodFlash');
+      setTimeout(()=>{ slots.classList.remove('goodFlash'); buildG3(); }, 800);
+    } else {
+      slots.classList.add('badFlash');
+      setTimeout(()=> slots.classList.remove('badFlash'), 500);
+    }
   }
 }
 
-/* ================= GAME 4 ================= */
+/* Spill 4 */
 const bigSquare = document.getElementById('bigSquare');
 const bigNum = document.getElementById('bigNum');
 const bigReset = document.getElementById('bigReset');
@@ -389,13 +372,12 @@ function reset4(){ refill4(); bigNum.textContent='—'; }
 bigSquare.addEventListener('click', (e)=>{ if(e.target===bigReset) return; next4(); });
 bigReset.addEventListener('click', (e)=>{ e.stopPropagation(); reset4(); });
 
-/* ================= GAME 5 ================= */
+/* Spill 5 */
 const numSq = document.getElementById('numSq');
 const numSqVal = document.getElementById('numSqVal');
 const colSq = document.getElementById('colSq');
 const reshuffleBoth = document.getElementById('reshuffleBoth');
-
-let bag5 = []; let colourBag = [];
+let bag5=[]; let colourBag=[];
 function refill5(){ bag5 = shuffle([...Array(20)].map((_,i)=>i+1)); }
 function refillColours(){ colourBag = shuffle([...COLOURS]); }
 function nextNum5(){ if(bag5.length===0) refill5(); const n=bag5.pop(); numSqVal.textContent=n; numSqVal.classList.remove('fade'); void numSqVal.offsetWidth; numSqVal.classList.add('fade'); }
@@ -403,20 +385,19 @@ function nextColour5(){ if(colourBag.length===0) refillColours(); const c=colour
 numSq.addEventListener('click', nextNum5);
 colSq.addEventListener('click', nextColour5);
 reshuffleBoth.addEventListener('click', ()=>{ refill5(); refillColours(); nextNum5(); nextColour5(); });
-
 function initG5(){ if(!bag5.length) refill5(); if(!colourBag.length) refillColours(); nextNum5(); nextColour5(); }
 
-/* ================= Init all ================= */
+/* Init all */
 function init(){
-  // G1
+  // g1
   layoutG1(); nextG1();
-  // G2
+  // g2
   layoutG2(); nextG2();
-  // G3
+  // g3
   buildG3();
-  // G4
+  // g4
   reset4();
-  // Start at page 1
+  // start
   showPage(0);
 }
 init();
