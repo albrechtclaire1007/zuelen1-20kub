@@ -75,7 +75,10 @@
     /* base size; JS will shrink per word if needed */
     font-size:2rem;
   }
-  .wordToken:active{ transform:scale(.97); }
+.wordToken:active{ transform:scale(.97); }
+.btn, .wordToken, #reshuffleBoth {
+  font-family: 'Schoulschreft', Arial, sans-serif !important;
+}
 
   .correct{ box-shadow:0 0 0 6px rgba(0,0,0,.12) inset; animation:blink .35s ease; }
   @keyframes blink{ 50%{ filter:brightness(1.15);} }
